@@ -32,10 +32,12 @@ while(n!='\0'){
     case 'E':
       flags->e = 1;
       break;
+    case 'v':
+      flags->v = 1;
+      break;
     default:
-      printf("s21_cat: illegal option --%c", n);
+      fprintf(stderr,"s21_cat: illegal option --%c", n);
       exit(0);
-    
   }
   i++;
   n=flag[i];
@@ -49,8 +51,9 @@ void LongFlag(char flag[], Fl *flags) {
     flags->n = 1;
   else if (strcmp(flag, "--squeeze-blank") == 0)
     flags->s = 1;
-  else {
-    printf("s21_cat: illegal option %s", flag);
+  else if (strcmp(flag,"--")==0);
+  else{
+    fprintf(stderr,"s21_cat: illegal option %s", flag);
     exit(0);
   }
 }

@@ -5,7 +5,7 @@
 #include "parser.h"
 
 void read_file(char file_name[], Fl flags);
-
+char NonPrintableChars (char c);
 int SqueezePrint (Fl flags, char c, char last);
 int TabPrint (Fl flags, char c);
 int EndPrint (Fl flags, char c);
@@ -26,7 +26,7 @@ void read_file(char file_name[], Fl flags) {
   
   FILE *file = fopen(file_name, "rb");
   if (!file) {
-    printf("s21_cat: %s: No such file or directory", file_name);
+    fprintf(stderr,"cat: %s: No such file or directory\n", file_name);
   } else {
     char c = fgetc(file);
     char last = '\n';
@@ -53,7 +53,7 @@ void read_file(char file_name[], Fl flags) {
         NumPrint(flags, last, &count);
         ft=TabPrint(flags, c);
         EndPrint(flags, c);
-        if (!ft && c!=EOF) printf("%c", c);
+        if (!ft && c!=EOF) printf("%c", flags.v==1 ? NonPrintableChars (c) : c);
       last = c;
       c = fgetc(file);
        
@@ -84,7 +84,7 @@ int NumPrint (Fl flags, char c, int *count){
   int flag=0;
   if (c == '\n' && flags.n) {
      flag=1; 
-        printf("     %d\t",  *count);
+        printf("%6i\t",  *count);
         *count=*count+1;  
       }
       return flag;
@@ -94,7 +94,7 @@ int NumNonBlankPrint(Fl flags, char c, char last, int *count){
   int flag=0;
   if(c!='\n' && flags.b && last=='\n') {
     flag=1;
-    printf("     %d\t",  *count);
+    printf("%6i\t",  *count);
         *count=*count+1; 
   }
   return flag;
@@ -106,4 +106,11 @@ int flag=0;
     flag=1; 
   }
   return flag;
+}
+
+char NonPrintableChars (char c){
+    if (c=='\t' || c=='\n'); 
+    else if (c<32) {printf ("^");c=c+64;}
+    else if (c==127) {printf ("^");c=c-64;}
+    return c; 
 }
