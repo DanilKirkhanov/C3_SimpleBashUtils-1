@@ -12,14 +12,14 @@ int main(int argc, char *argv[]) {
     Grep(argc, argv, &flags);
     // printf("%ld\n%s", strlen(flags.pattern), flags.pattern);
   }
-
+  free(flags.pattern);
   if (!f || argc == 1)
     fprintf(stderr,
             "usage: grep [-abcDEFGHhIiJLlmnOoqRSsUVvwxZ] [-A num] [-B num] "
             "[-C[num]]\n[-e pattern] [-f file] [--binary-files=value] "
             "[--color=when]\n[--context[=num]] [--directories=action] "
             "[--label] [--line-buffered]\n[--null] [pattern] [file ...]\n");
-  free(flags.pattern);
+
   return 0;
 }
 
@@ -48,18 +48,18 @@ void Grep(int argc, char *argv[], Fl *flags) {
       char *c = strchr(argv[i - 1], 'e');
       char *f = strchr(argv[i - 1], 'f');
       FILE *file = fopen(argv[i], "rb");
-      if (file && !(argv[i - 1][0] == '-' && c != NULL && c[1] == '\0') &&
-          !(argv[i - 1][0] == '-' && f != NULL && f[1] == '\0')) {
-        GrepFile(&preg, file, flags, argv[i], countfiles);
+      if (file) {
+        if (!(argv[i - 1][0] == '-' && c != NULL && c[1] == '\0') &&
+            !(argv[i - 1][0] == '-' && f != NULL && f[1] == '\0'))
+          GrepFile(&preg, file, flags, argv[i], countfiles);
         fclose(file);
       } else if (argv[i][0] != '-' && !flags->s &&
                  !(argv[i - 1][0] == '-' && c != NULL && c[1] == '\0') &&
                  !(argv[i - 1][0] == '-' && f != NULL && f[1] == '\0'))
         fprintf(stderr, "no such file or dir %s\n", argv[i]);
     }
-    regfree(&preg);
   }
-  
+  regfree(&preg);
 }
 
 void GrepFile(regex_t *preg, FILE *file, Fl *flags, char *name,
@@ -76,7 +76,7 @@ void GrepFile(regex_t *preg, FILE *file, Fl *flags, char *name,
         if (!flags->c) {
           if (!flags->h && countfiles > 1) printf("%s:", name);
           if (flags->n) printf("%d:", countline);
-          if (flags->o)
+          if (flags->o && !flags->v)
             flag_o(str, match, *preg);
           else
             printf("%s\n", str);
@@ -88,11 +88,11 @@ void GrepFile(regex_t *preg, FILE *file, Fl *flags, char *name,
       }
     }
   }
-  
+
   if (flags->c) {
-    if (countfiles > 1) printf("%s:", name);
+    if (countfiles > 1 && !flags->h) printf("%s:", name);
     printf("%d\n", countmatch);
-    }
+  }
   if (flags->l == 2) {
     printf("%s\n", name);
     flags->l = 1;

@@ -16,9 +16,10 @@ int main(int argc, char *argv[]) {
   Fl flags = {0, 0, 0, 0, 0, 0};
   int f = 1;
   Parser(&flags, argv, argc, &f);
-  for (int i = 1; i < argc; i++) {
-    read_file(argv[i], flags);
-  }
+  if (f)
+    for (int i = 1; i < argc; i++) {
+      read_file(argv[i], flags);
+    }
   return 0;
 }
 

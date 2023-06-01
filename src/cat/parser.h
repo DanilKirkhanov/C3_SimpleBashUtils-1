@@ -8,8 +8,8 @@ typedef struct {
   int t;
   int v;
 } Fl;
-void ShortFlag(char flag[], Fl *flags);
-void LongFlag(char flag[], Fl *flags);
+void ShortFlag(char flag[], Fl *flags, int *f);
+void LongFlag(char flag[], Fl *flags, int *f);
 void Parser(Fl *flags, char *argv[], int argc, int *f);
 
 #endif

@@ -72,7 +72,7 @@ int NumFiles(int argc, char *argv[]) {
 }
 
 char *Patterns(int argc, char **argv, int *err) {
-  char *c = NULL, *ff=NULL;
+  char *c = NULL, *ff = NULL;
   char *ptrs = NULL;
   size_t countmem = 0;
   char *str = NULL;
@@ -94,7 +94,7 @@ char *Patterns(int argc, char **argv, int *err) {
       }
     } else {
       if (ff != NULL && argv[i][0] == '-') {
-        FILE *f=NULL;
+        FILE *f = NULL;
         if (ff[1] == '\0') {
           if (argv[i + 1] != NULL) {
             f = fopen(argv[i + 1], "rb");
@@ -102,7 +102,6 @@ char *Patterns(int argc, char **argv, int *err) {
             fprintf(stderr, "grep: option requires an argument -- f\n");
             *err = 0;
           }
-
         } else {
           f = fopen(ff + 1, "rb");
         }
@@ -116,7 +115,7 @@ char *Patterns(int argc, char **argv, int *err) {
           fclose(f);
         } else {
           fprintf(stderr, "grep: %s: No such file or directory\n",
-                  c[1] == '\0' ? argv[i + 1] : c + 1);
+                  ff[1] == '\0' ? argv[i + 1] : ff + 1);
           *err = 2;
         }
       }
